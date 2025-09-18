@@ -1,0 +1,121 @@
+/* Reset some basics */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background and container */
+body {
+    background: linear-gradient(135deg, #2e2b5f, #1e1a3b);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #eee;
+}
+
+form {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    width: 100%;
+    max-width: 480px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+form:hover {
+    transform: translateY(-5px);
+}
+
+/* Headings */
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #f0e9ff;
+    text-shadow: 0 0 8px #a093ff;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #c0b9ff;
+}
+
+/* Inputs, selects, textarea */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #eee;
+    font-size: 1rem;
+    margin-bottom: 25px;
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    resize: vertical;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px #a093ff;
+    outline: none;
+    color: #fff;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 15px 0;
+    border-radius: 15px;
+    border: none;
+    background: linear-gradient(90deg, #8a79ff, #b49eff);
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(138, 121, 255, 0.7);
+    transition: background 0.4s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #b49eff, #8a79ff);
+    transform: scale(1.05);
+}
+
+/* Placeholder text style */
+::placeholder {
+    color: #d0cfff;
+    opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+    form {
+        padding: 30px 20px;
+        border-radius: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
