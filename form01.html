@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patient Management Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin:0;
+  background: linear-gradient(135deg, #4a63de, #8da9ff);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Floating shapes */
+body::before, body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  z-index: 0;
+}
+body::before { width: 300px; height: 300px; top: -80px; left: -100px; }
+body::after { width: 400px; height: 400px; bottom: -120px; right: -150px; }
+
+header {
+  text-align:center;
+  padding: 25px;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Form & Card Styling */
+.card {
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+  margin-bottom: 30px;
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 35px rgba(0,0,0,0.25);
+}
+
+h3 { color: #4a63de; margin-bottom: 15px; }
+
+label {
+  display:block;
+  margin-top: 12px;
+  font-weight:600;
+  color: #364dc9;
+}
+
+input, select, textarea {
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:12px;
+  border:none;
+  background: rgba(74,99,222,0.1);
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline:none;
+  background: rgba(74,99,222,0.2);
+  box-shadow: 0 0 8px rgba(74,99,222,0.3);
+}
+
+button {
+  margin-top:20px;
+  padding:12px 20px;
+  background: #4a63de;
+  color:white;
+  border:none;
+  border-radius:15px;
+  font-weight:600;
+  font-size:1rem;
+  cursor:pointer;
+  transition: all 0.3s ease;
+}
+button:hover {
+  background:#364dc9;
+  transform: translateY(-2px);
+}
+
+.patient-list {
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+}
+.patient-card {
+  flex:1 1 calc(45% - 10px);
+  cursor:pointer;
+  padding:15px;
+  border-radius:15px;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.patient-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow:0 12px 28px rgba(0,0,0,0.2);
+}
+
+canvas {
+  margin: 15px 0;
+  max-width: 100%;
+  border-radius: 12px;
+  background: #f8faff;
+  padding: 10px;
+}
+</style>
+</head>
+<body>
+
+<header>🏥 Patient Management Dashboard</header>
+
+<div class="container">
+  <!-- FORM PAGE -->
+  <div id="formPage">
+    <div class="card">
+      <h3>Add New Patient / Record</h3>
+      <form id="patientForm">
+        <label>Name</label><input type="text" id="name" required pattern="[A-Za-z ]+">
+        <label>Age</label><input type="number" id="age" min="0" required>
+        <label>Sex</label><select id="sex" required><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+        <label>Weight (kg)</label><input type="number" id="weight" min="0" required>
+        <label>Blood Group</label><select id="blood_group" required><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+        <label>Last Visit Date</label><input type="date" id="last_visit">
+        <label>Symptoms</label><input type="text" id="symptoms">
+        <label>Heart Rate (bpm)</label><input type="number" id="heart_rate" min="0" required>
+        <label>Temperature (°C)</label><input type="number" id="temperature" min="0" step="0.1" required>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PATIENT LIST PAGE -->
+  <div id="listPage" style="display:none;">
+    <div class="card">
+      <h3>All Patients</h3>
+      <div class="patient-list" id="patientList"></div>
+      <button onclick="goBackForm()">Add Another Patient / Record</button>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div id="profilePage" style="display:none;">
+    <div class="card" id="profileDetails"></div>
+    <div class="card">
+      <h3>📊 Vitals Trend</h3>
+      <canvas id="heartChart"></canvas>
+      <canvas id="tempChart"></canvas>
+      <canvas id="weightChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>📝 AI Summary</h3>
+      <p id="aiSummary"></p>
+      <h3>⚠️ Alerts</h3>
+      <ul id="aiAlerts"></ul>
+      <button onclick="goBackList()">Back to Patients</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let patients=[];
+let currentPatient=null;
+
+const formPage=document.getElementById("formPage");
+const listPage=document.getElementById("listPage");
+const profilePage=document.getElementById("profilePage");
+
+document.getElementById("patientForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value;
+  const sex = document.getElementById("sex").value;
+  const weight = document.getElementById("weight").value;
+  const blood_group = document.getElementById("blood_group").value;
+  const last_visit = document.getElementById("last_visit").value;
+  const symptoms = document.getElementById("symptoms").value;
+  const heart_rate = document.getElementById("heart_rate").value;
+  const temperature = document.getElementById("temperature").value;
+
+  // Check if patient already exists (by name)
+  let patient = patients.find(p => p.name.toLowerCase() === name.toLowerCase());
+
+  if(patient) {
+    // Existing patient → append new visit
+    patient.age = age;
+    patient.weight = weight;
+    patient.last_visit = last_visit;
+    patient.symptoms = symptoms;
+    patient.heart_rate = heart_rate;
+    patient.temperature = temperature;
+    patient.history.push({heart_rate, temperature, weight});
+  } else {
+    // New patient
+    patient = {
+      id: Date.now(),
+      name, age, sex, weight, blood_group, last_visit, symptoms, heart_rate, temperature,
+      history: [{heart_rate, temperature, weight}]
+    };
+    patients.push(patient);
+  }
+
+  showListPage();
+  document.getElementById("patientForm").reset();
+});
+
+function showListPage(){
+  formPage.style.display="none";
+  profilePage.style.display="none";
+  listPage.style.display="block";
+  const listDiv=document.getElementById("patientList");
+  listDiv.innerHTML="";
+  patients.forEach(p=>{
+    const card=document.createElement("div");
+    card.className="patient-card";
+    card.innerHTML=`<b>${p.name}</b><br>Age: ${p.age} | ${p.sex}`;
+    card.onclick=()=>showProfile(p.name);
+    listDiv.appendChild(card);
+  });
+}
+
+function goBackForm(){ 
+  listPage.style.display="none"; 
+  profilePage.style.display="none"; 
+  formPage.style.display="block"; 
+  currentPatient=null;
+}
+function goBackList(){ 
+  listPage.style.display="block"; 
+  profilePage.style.display="none"; 
+  currentPatient=null;
+}
+
+function showProfile(name){
+  currentPatient=patients.find(p=>p.name===name);
+  listPage.style.display="none"; 
+  formPage.style.display="none"; 
+  profilePage.style.display="block";
+
+  const labels=currentPatient.history.map((_,i)=>"Visit "+(i+1));
+  const heartData=currentPatient.history.map(h=>h.heart_rate);
+  const tempData=currentPatient.history.map(h=>h.temperature);
+  const weightData=currentPatient.history.map(h=>h.weight);
+
+  document.getElementById("profileDetails").innerHTML=`
+    <h3>${currentPatient.name}'s Profile</h3>
+    <p><b>Age:</b> ${currentPatient.age}</p>
+    <p><b>Sex:</b> ${currentPatient.sex}</p>
+    <p><b>Weight:</b> ${currentPatient.weight} kg</p>
+    <p><b>Blood Group:</b> ${currentPatient.blood_group}</p>
+    <p><b>Last Visit:</b> ${currentPatient.last_visit||"N/A"}</p>
+    <p><b>Symptoms:</b> ${currentPatient.symptoms}</p>
+    <p><b>Heart Rate:</b> ${currentPatient.heart_rate} bpm</p>
+    <p><b>Temperature:</b> ${currentPatient.temperature} °C</p>
+  `;
+
+  // Charts
+  new Chart(document.getElementById("heartChart").getContext("2d"),{
+    type:"line",
+    data:{labels,datasets:[{label:"Heart Rate", data:heartData, borderColor:"#4a63de", fill:false}]},
+    options:{responsive:true}
+  });
+  new Chart(document.getElementById("tempChart").getContext("2d"),{
+    type:"line",
+    data:{labels,datasets:[{label:"Temperature", data:tempData, borderColor:"#ff6b6b", fill:false}]},
+    options:{responsive:true}
+  });
+  new Chart(document.getElementById("weightChart").getContext("2d"),{
+    type:"line",
+    data:{labels,datasets:[{label:"Weight", data:weightData, borderColor:"#00c9a7", fill:false}]},
+    options:{responsive:true}
+  });
+
+  // Local AI summary (simulate actionable summary)
+  document.getElementById("aiSummary").innerText = generateLocalSummary(currentPatient);
+
+  // Alerts
+  let alerts=[];
+  const last = currentPatient.history[currentPatient.history.length-1];
+  if(last.heart_rate>100) alerts.push("High heart rate!");
+  if(last.temperature>38) alerts.push("Fever suspected!");
+  if(last.weight<40) alerts.push("Underweight alert!");
+  document.getElementById("aiAlerts").innerHTML=alerts.length?alerts.map(a=>`<li>${a}</li>`).join(""):"<li>No alerts 🎉</li>";
+}
+
+// Local AI summary (simulate doctor-friendly summary)
+function generateLocalSummary(patient){
+  let summary=`Symptoms: ${patient.symptoms || "None"}. `;
+  const last = patient.history[patient.history.length-1];
+  const prev = patient.history[patient.history.length-2] || last;
+
+  if(last.heart_rate > prev.heart_rate) summary+="Heart rate rising; monitor. ";
+  else if(last.heart_rate < prev.heart_rate) summary+="Heart rate improving. ";
+
+  if(last.temperature > prev.temperature) summary+="Temperature increasing; possible fever. ";
+  else if(last.temperature < prev.temperature) summary+="Temperature decreasing; condition improving. ";
+
+  if(last.weight < prev.weight) summary+="Weight decreasing; check nutrition. ";
+  else if(last.weight > prev.weight) summary+="Weight slightly increasing. ";
+
+  return summary;
+}
+</script>
+</body>
