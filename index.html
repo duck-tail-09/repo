@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swastrix – Smart EMR</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+  <b>SWASTRIX</b>
+</div>
+
+    
+    <!-- Navigation Links -->
+    <div class="nav-links">
+      <a href="#dashboard">Dashboard</a>
+      <!-- <a href="form01.html">Add Patients</a> -->
+      <a href="#analytics">Analytics</a>
+      <a href="#settings">Settings</a>
+      <button onclick="window.location.href='form01.html'">Add patient</button>
+      <button onclick="window.location.href='index01.html'">Swastrix</button>
+
+    </div>
+
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </nav>
+
+  <!-- Layout -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="patients">
+      <h2>Patients</h2>
+      <input type="text" id="searchBox" placeholder="Search..." />
+      <ul id="patientList"></ul>
+      <button id="addPatientBtn">Patient History</button>
+    </aside>
+
+    <!-- Dashboard -->
+    <main class="dashboard" id="dashboard">
+      <!-- Patient Summary -->
+      <section class="card" id="summary">
+        <h2>Patient Summary</h2>
+        <p>Select a patient to view details.</p>
+      </section>
+
+      <!-- Timeline + Vitals -->
+      <div class="grid">
+        <!-- Timeline -->
+        <section class="card" id="timeline">
+          <h2>Encounters</h2>
+          <ul id="encounterList"></ul>
+          <a href="form01.html">
+          <button id="addNoteBtn">+ Add Note</button>
+          </a>
+        </section>
+
+        <!-- Vitals -->
+        <section class="card" id="vitals">
+          <h2>Vitals</h2>
+          <canvas id="vitalsChart" width="400" height="200"></canvas>
+          <a href="form01.html">
+          <button id="addVitalBtn">+ Add Vitals</button></a>
+        </section>
+      </div>
+
+      <!-- Alerts -->
+      <section class="card" id="alerts">
+        <h2>Alerts</h2>
+        <ul id="alertList"></ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Analytics Section -->
+  <!-- Analytics Section -->
+<section class="card" id="analytics">
+  <h2>Analytics</h2>
+
+  <!-- KPI Cards -->
+  <div class="analytics-cards">
+    <div class="card kpi">
+      <h3>Total Patients</h3>
+      <p id="totalPatients">42</p>
+    </div>
+    <div class="card kpi">
+      <h3>Alerts</h3>
+      <p id="totalAlerts">5</p>
+    </div>
+    <div class="card kpi">
+      <h3>Avg. Heart Rate</h3>
+      <p id="avgHeartRate">78 bpm</p>
+    </div>
+    <div class="card kpi">
+      <h3>Most Common Diagnosis</h3>
+      <p id="commonDiagnosis">Flu</p>
+    </div>
+  </div>
+
+  <div class="analytics-charts">
+  <div class="chart-wrapper">
+    <canvas id="vitalsTrendChart"></canvas>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="encountersChart"></canvas>
+  </div>
+</div>
+
+
+
+  <!-- Settings Section -->
+  <section class="card" id="settings">
+    <h2>Settings</h2>
+    <p>Customize your Swastrix experience here.</p>
+  </section>
+
+  <!-- Scripts -->
+   <script>
+  const logo = document.querySelector('.logo');
+  logo.addEventListener('click', () => {
+    window.location.href = 'dashboard.html'; // Redirects to dashboard page
+  });
+  <footer class="footer">
+  <div class="footer-container">
+    <!-- Logo / Brand -->
+    <div class="footer-col">
+      <h2 class="footer-logo">SWASTRIX</h2>
+      <p>Smart EMR, Smarter Care.</p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-col">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Resources -->
+    <div class="footer-col">
+      <h3>Resources</h3>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">FAQs</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact / Socials -->
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <p>Email: support@swastrix.com</p>
+      <p>Phone: +91-9876543210</p>
+      <div class="socials">
+        <a href="#">🌐</a>
+        <a href="#">🔗</a>
+        <a href="#">🐦</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 Swastrix. All rights reserved.</p>
+  </div>
+</footer>
+
+
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  
+</body>
+</html>
